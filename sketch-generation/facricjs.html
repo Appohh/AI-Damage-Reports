@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Car Accident Sketch Tool</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+    canvas {
+      border: 1px solid #ccc;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+
+  <script>
+    const canvas = new fabric.Canvas('c');
+    canvas.setWidth(window.innerWidth);
+    canvas.setHeight(window.innerHeight);
+
+    const data = {
+      cars: [
+        { id: "A", status: "parked", vehicle: "Car", notes: "User's car" },
+        { id: "B", status: "reversing", vehicle:"Truck", notes: "None" },
+        { id: "C", status: "driving", vehicle: "Car", notes: "None" },
+        { id: "D", status: "standing", vehicle: "Car", notes: "None" },
+        { id: "E", status: "unknown", vehicle: "Car", notes: "None" }
+      ],
+      collisions: [
+        ["B", "A"],
+        ["C", "A"]
+      ]
+    };
+
+    const statusColors = {
+      parked: '#3A87D4',
+      standing: '#999999',
+      driving: '#D9534F',
+      reversing: '#F0AD4E',
+      sliding: '#800080',
+      unknown: '#969696'
+    };
+
+    const vehicleStyles = {
+      Car: {
+        width: 80,
+        height: 40,
+        fill: '#3A87D4',
+        image: null
+      },
+      Truck: {
+        width: 120,
+        height: 50,
+        fill: '#A52A2A',
+        image: null
+      }
+    };
+
+    // Create arrow with arrowhead
+    function createArrow(x, y, color = 'black') {
+      const line = new fabric.Rect({
+        width: 60,
+        height: 8,
+        fill: color,
+        originX: 'left',
+        originY: 'center'
+      });
+
+      const triangle = new fabric.Triangle({
+        width: 16,
+        height: 16,
+        fill: color,
+        originX: 'center',
+        originY: 'center',
+        left: 60,
+        top: 0,
+        angle: 90
+      });
+
+      const group = new fabric.Group([line, triangle], {
+        left: x,
+        top: y,
+        hasControls: true,
+        hasBorders: true,
+        selectable: true
+      });
+
+      return group;
+    }
+
+    // Create collision marker (e.g., red X)
+    function createCollisionMarker(x, y) {
+      const line1 = new fabric.Line([ -10, -10, 10, 10 ], {
+        stroke: 'red',
+        strokeWidth: 3
+      });
+      const line2 = new fabric.Line([ -10, 10, 10, -10 ], {
+        stroke: 'red',
+        strokeWidth: 3
+      });
+
+      const group = new fabric.Group([line1, line2], {
+        left: x,
+        top: y,
+        hasControls: true,
+        selectable: true
+      });
+
+      return group;
+    }
+
+    // Place cars on the canvas
+    const startX = 100;
+    const spacing = 150;
+    data.cars.forEach((car, index) => {
+      const style = vehicleStyles[car.vehicle] || vehicleStyles['Car'];
+      const fillColor = statusColors[car.status] || style.fill;
+
+      const rectWidth = style.width;
+      const rectHeight = style.height;
+
+      const rect = new fabric.Rect({
+        width: rectWidth,
+        height: rectHeight,
+        fill: fillColor,
+        originX: 'center',
+        originY: 'center',
+        rx: 6,
+        ry: 6
+      });
+
+      const label = new fabric.Text(car.id, {
+        fontSize: 16,
+        fill: 'white',
+        originX: 'center',
+        originY: 'center',
+        fontWeight: 'bold'
+      });
+
+      const groupObjects = [rect, label];
+
+      // Add reversing lights inside the box
+      if (car.status === "reversing") {
+        const light1 = new fabric.Circle({
+          radius: 5,
+          fill: '#FFD700',
+          left: -rectWidth / 2,
+          top: -rectHeight / 2 + 10,
+          originX: 'left',
+          originY: 'top'
+        });
+
+        const light2 = new fabric.Circle({
+          radius: 5,
+          fill: '#FFD700',
+          left: -rectWidth / 2,
+          top: rectHeight / 2 - 20,
+          originX: 'left',
+          originY: 'top'
+        });
+
+        groupObjects.push(light1, light2);
+      }
+
+      const group = new fabric.Group(groupObjects, {
+        left: startX + index * spacing,
+        top: 100,
+        hasControls: true,
+        hasBorders: true,
+        selectable: true,
+        angle: 0
+      });
+
+      canvas.add(group);
+    });
+
+    // Place arrows and collision markers (freely positioned for now)
+    data.collisions.forEach(([from, to], i) => {
+      const arrow = createArrow(150 + i * 150, 300);
+      const marker = createCollisionMarker(160 + i * 150, 350);
+      canvas.add(arrow);
+      canvas.add(marker);
+    });
+
+    // Allow dragging all
+    canvas.selection = true;
+  </script>
+</body>
+</html>

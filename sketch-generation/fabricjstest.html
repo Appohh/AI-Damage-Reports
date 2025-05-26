@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Fabric.js Dynamic Boxes and Arrows</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+    <style>
+        canvas {
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="c" width="800" height="500"></canvas>
+    <script>
+        const canvas = new fabric.Canvas('c');
+
+        // CONFIGURABLE: Set number of boxes and arrows
+        const numBoxes = 8;
+        const numArrows = 3;
+
+        // Box and arrow sizes
+        const boxWidth = 80, boxHeight = 80, boxSpacing = 30;
+        const arrowWidth = 80, arrowHeight = 30, arrowSpacing = 30;
+
+        // Colors for boxes and arrows
+        const boxColors = ['red', 'green', 'blue', 'orange', 'purple', 'yellow'];
+        const arrowColors = ['orange', 'purple', 'black', 'gray', 'brown', 'teal'];
+
+        // Function to create an arrow as a fabric group
+        function createArrow(left, top, color) {
+            const line = new fabric.Rect({
+                left: 0,
+                top: 15,
+                width: 60,
+                height: 10,
+                fill: color,
+                originX: 'left',
+                originY: 'center'
+            });
+            const triangle = new fabric.Triangle({
+                left: 60,
+                top: 15,
+                width: 20,
+                height: 20,
+                fill: color,
+                angle: 90,
+                originX: 'center',
+                originY: 'center'
+            });
+            return new fabric.Group([line, triangle], {
+                left: left,
+                top: top,
+                hasControls: true
+            });
+        }
+
+        // Calculate total width for boxes and arrows to center them
+        const totalBoxesWidth = numBoxes * boxWidth + (numBoxes - 1) * boxSpacing;
+        const totalArrowsWidth = numArrows * arrowWidth + (numArrows - 1) * arrowSpacing;
+        const canvasWidth = canvas.width;
+
+        // Place boxes
+        const boxes = [];
+        let startX = (canvasWidth - totalBoxesWidth) / 2;
+        for (let i = 0; i < numBoxes; i++) {
+            boxes.push(new fabric.Rect({
+                left: startX + i * (boxWidth + boxSpacing),
+                top: 30,
+                fill: boxColors[i % boxColors.length],
+                width: boxWidth,
+                height: boxHeight,
+                angle: 0,
+                hasControls: true
+            }));
+        }
+
+        // Place arrows below boxes
+        const arrows = [];
+        let arrowStartX = (canvasWidth - totalArrowsWidth) / 2;
+        for (let i = 0; i < numArrows; i++) {
+            arrows.push(createArrow(
+                arrowStartX + i * (arrowWidth + arrowSpacing),
+                30 + boxHeight + 30, // 30px below boxes
+                arrowColors[i % arrowColors.length]
+            ));
+        }
+
+        // Add all objects to the canvas
+        canvas.add(...boxes, ...arrows);
+
+        canvas.selection = true;
+    </script>
+</body>
+</html>
