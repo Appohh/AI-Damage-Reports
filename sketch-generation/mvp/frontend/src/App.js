@@ -6,6 +6,7 @@ import Home from './Home';
 import About from './About';
 import AccidentDescribe from './AccidentDescribe';
 import AccidentSketch from './AccidentSketch';
+import DescribeAccident from './DescribeAccident';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/accident-describe" element={<AccidentDescribe />} />
+          <Route path="/describe-accident" element={<DescribeAccident />} />
           <Route path="/sketch" element={<AccidentSketch />} />
         </Routes>
       </div>
