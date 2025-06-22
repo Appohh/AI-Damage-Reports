@@ -1,0 +1,13 @@
+injury: yes
+property_damage: yes
+phone_number: 448474784
+vat_a: yes
+insurer_a: aaa
+policy_num: 7788474
+agent_a: Max
+green_number: 4784752
+green_card_until: 2025/17
+damage_insured_a: yes
+initial_impact_a: Right Middle, Left Middle
+visible_damage_a: No
+remarks_a: No

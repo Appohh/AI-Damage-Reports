@@ -2,11 +2,12 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from routes import accidentDescription
+from routes import descriptionAccident
 
 
 app = FastAPI()
 
-app.include_router(accidentDescription.router)
+app.include_router(descriptionAccident.router)
 
 # Allow frontend to talk to backend (important!)
 app.add_middleware(

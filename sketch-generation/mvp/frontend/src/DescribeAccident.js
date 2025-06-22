@@ -77,22 +77,35 @@ function DescribeAccident() {
         }
     };
 
-    return (
+     return (
         <div style={{ maxWidth: 700, margin: '0 auto', padding: 24 }}>
             <h1>Accident Report Form</h1>
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label>🩹 <strong>Describe any injuries (if any):</strong></label>
-                    <textarea
-                        value={injuryDescription}
-                        onChange={(e) => setInjuryDescription(e.target.value)}
-                        rows={3}
-                        style={{ width: '100%' }}
-                        placeholder="Describe injuries..."
-                    />
+                    <label><strong>Are there any injuries?</strong></label>
+                    <div style={{ marginTop: '8px' }}>
+                        <label>
+                            <input
+                                type="radio"
+                                name="injury"
+                                value="yes"
+                                checked={injuryDescription === 'yes'}
+                                onChange={(e) => setInjuryDescription(e.target.value)}
+                            /> Yes
+                        </label>
+                        <label style={{ marginLeft: 16 }}>
+                            <input
+                                type="radio"
+                                name="injury"
+                                value="no"
+                                checked={injuryDescription === 'no'}
+                                onChange={(e) => setInjuryDescription(e.target.value)}
+                            /> No
+                        </label>
+                    </div>
                 </div>
                 <div style={{ marginTop: 16 }}>
-                    <label>📝 <strong>What happened in your own words?</strong></label>
+                    <label><strong>What happened in your own words?</strong></label>
                     <textarea
                         value={accidentDescription}
                         onChange={(e) => setAccidentDescription(e.target.value)}
@@ -137,7 +150,7 @@ function DescribeAccident() {
                     />
                 </div>
                 <div style={{ marginTop: 16 }}>
-                    <label>🚗 <strong>What type of vehicle was involved?</strong></label>
+                    <label><strong>What type of vehicle was involved?</strong></label>
                     <select
                         value={vehicleType}
                         onChange={(e) => {

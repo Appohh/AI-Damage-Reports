@@ -1,4 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useImperativeHandle,
+  forwardRef
+} from 'react';
 import {
   Canvas,
   Rect,
@@ -19,16 +24,8 @@ const statusColors = {
 };
 
 const vehicleStyles = {
-  Car: {
-    width: 80,
-    height: 40,
-    fill: '#3A87D4',
-  },
-  Truck: {
-    width: 120,
-    height: 50,
-    fill: '#A52A2A',
-  }
+  Car: { width: 80, height: 40, fill: '#3A87D4' },
+  Truck: { width: 120, height: 50, fill: '#A52A2A' },
 };
 
 function createArrow(x, y, color = 'black') {
@@ -77,16 +74,22 @@ function createCollisionMarker(x, y) {
   });
 }
 
-export default function AccidentSketch({ data }) {
+const FabricSketch = forwardRef(({ data }, ref) => {
   const canvasRef = useRef(null);
   const fabricCanvas = useRef(null);
 
+  useImperativeHandle(ref, () => ({
+    getImage: () => {
+      return fabricCanvas.current?.toDataURL({ format: 'png' });
+    }
+  }));
+
   useEffect(() => {
     fabricCanvas.current = new Canvas(canvasRef.current, {
-      selection: true
+      selection: true,
+      backgroundColor: 'white'
     });
 
-    // Set canvas size to full window
     fabricCanvas.current.setWidth(1000);
     fabricCanvas.current.setHeight(600);
 
@@ -101,11 +104,13 @@ export default function AccidentSketch({ data }) {
     const canvas = fabricCanvas.current;
     canvas.clear();
 
+    const cars = data.vehicle_info?.cars || [];
+    const collisions = data.vehicle_info?.collisions || [];
+
     const startX = 100;
     const spacing = 150;
 
-    // Draw cars
-    data.cars.forEach((car, index) => {
+    cars.forEach((car, index) => {
       const style = vehicleStyles[car.vehicle] || vehicleStyles['Car'];
       const fillColor = statusColors[car.status] || style.fill;
 
@@ -161,8 +166,7 @@ export default function AccidentSketch({ data }) {
       canvas.add(group);
     });
 
-    // Draw collisions — simple positioning (you can improve this!)
-    data.collisions.forEach(([from, to], i) => {
+    collisions.forEach(([from, to], i) => {
       const arrow = createArrow(150 + i * 150, 300);
       const marker = createCollisionMarker(160 + i * 150, 350);
       canvas.add(arrow);
@@ -170,7 +174,6 @@ export default function AccidentSketch({ data }) {
     });
 
     canvas.renderAll();
-
   }, [data]);
 
   return (
@@ -184,4 +187,6 @@ export default function AccidentSketch({ data }) {
       }}
     />
   );
-}
+});
+
+export default FabricSketch;
