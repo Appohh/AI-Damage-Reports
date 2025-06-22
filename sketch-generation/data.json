@@ -1,0 +1,13 @@
+{
+  "cars": [
+    { "id": "A", "status": "parked", "vehicle": "Car", "notes": "User's car" },
+    { "id": "B", "status": "reversing", "vehicle": "Truck", "notes": "None" },
+    { "id": "C", "status": "driving", "vehicle": "Car", "notes": "None" },
+    { "id": "D", "status": "standing", "vehicle": "Car", "notes": "None" },
+    { "id": "E", "status": "unknown", "vehicle": "Car", "notes": "None" }
+  ],
+  "collisions": [
+    ["B", "A"],
+    ["C", "A"]
+  ]
+}
